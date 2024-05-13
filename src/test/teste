@@ -1,4 +1,4 @@
-curl -X POST --location "http://127.0.0.1:8080/user" \
+curl -X POST --location "http://localhost:8080/signup" \
     -H "Content-Type: application/json" \
     -d "{
           \"username\": \"adriano\",

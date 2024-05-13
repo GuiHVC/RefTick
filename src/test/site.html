@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reftick</title>
+</head>
+
+<body>
+<div class="container">
+    <div>
+    <label for="username"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="username" required>
+    </div>
+    </br>
+
+    <div>
+    <label for="firstName"><b>Email</b></label>
+    <input type="text" placeholder="Enter First Name" name="firstName" required>
+    <label for="lastName"><b>Email</b></label>
+    <input type="text" placeholder="Enter Last Name" name="lastName" required>
+    </div>
+    </br>
+
+    <div>
+    <label for="email"><b>Email</b></label>
+    <input type="email" placeholder="Enter Email" name="email" required>
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+    </div>
+    </br>
+
+    <div>
+    <button onclick="postLogin()">Login</button>
+    <button onclick="postSignUp()">Sign up</button>
+    <button onclick="listUsers()">List</button>
+    </div>
+</div>
+
+</br>
+<button onclick="fetchData()">Fetch Data</button>
+
+<div id="result"></div>
+
+<script>
+    const request = ( url, params = {}, method = 'GET', headers = {}) => {
+        let options = {method};
+        options.headers = headers
+        if ( 'GET' === method ) {
+            url += '?' + ( new URLSearchParams( params ) ).toString();
+        } else {
+            options.body = JSON.stringify( params );
+        }
+
+        return fetch( url, options );
+    };
+    const get = ( url, params, headers ) => request( url, params, 'GET', headers );
+    const post = ( url, params, headers ) => request( url, params, 'POST', headers );
+
+    function postSignUp() {
+        username = document.querySelector('input[name="username"]').value
+        firstName = document.querySelector('input[name="firstName"]').value
+        lastName = document.querySelector('input[name="lastName"]').value
+        email = document.querySelector('input[name="email"]').value
+        password = document.querySelector('input[name="password"]').value
+        if(username == '' || firstName == '' || lastName == '' || email == '' || password == '') {
+            alert('Please fill all fields')
+            return;
+        }
+        post('http://localhost:8080/signup', {
+            "username": username,
+            "firstName": firstName,
+            "lastName": lastName,
+            "email": email,
+            "password": password
+        }, {
+            'Content-Type': 'application/json'
+        }).then(response => response.text()).then(data => {
+            alert('User created successfully')
+        }).catch(error => {
+            console.error('Error:', error);
+        })
+    }
+
+
+    function listUsers() {
+        get('http://localhost:8080').then(response => response.json()).then(data => {
+            document.getElementById('result').innerHTML = JSON.stringify(data);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // function fetchData() {
+    //     fetch('http://localhost:8080/sheets').then(response => response.text()).then(data => {
+    //     document.getElementById('result').innerHTML = data//JSON.stringify(data);
+    //     }).catch(error => {
+    //     console.error('Error:', error);
+    // });
+    function fetchData() {
+        get('http://localhost:8080')
+    }
+</script>
+</body>
+
+</html>

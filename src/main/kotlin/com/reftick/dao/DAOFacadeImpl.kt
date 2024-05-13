@@ -25,13 +25,13 @@ class DAOFacadeImpl : DAOFacade {
             .singleOrNull()
     }
 
-    override suspend fun addNewUser(username: String, firstName: String, lastName: String, email: String, password: String): User? = dbQuery {
+    override suspend fun addNewUser(user: User): User? = dbQuery {
         val insertStatement = Users.insert {
-            it[Users.username] = username
-            it[Users.firstName] = firstName
-            it[Users.lastName] = lastName
-            it[Users.email] = email
-            it[Users.password] = password
+            it[Users.username] = user.username
+            it[Users.firstName] = user.firstName
+            it[Users.lastName] = user.lastName
+            it[Users.email] = user.email
+            it[Users.password] = user.password
         }
         insertStatement.resultedValues?.singleOrNull()?.let(::resultRowToUser)
     }
@@ -59,8 +59,10 @@ class DAOFacadeImpl : DAOFacade {
 val dao: DAOFacade = DAOFacadeImpl().apply {
     runBlocking {
         if(allUsers().isEmpty()) {
-            addNewUser("Guil", "Guilherme", "Cunha", "admin1@usp.br", "senha")
-            addNewUser("Adrielias", "Adriano", "Andrade", "admin2@usp.br", "senha")
+            val guil = User("Guil", "Guilherme", "Cunha", "admin1@usp.br", "senha")
+            val adrielias = User("Adrielias", "Adriano", "Andrade", "admin2@usp.br", "senha")
+            addNewUser(guil)
+            addNewUser(adrielias)
         }
     }
 }

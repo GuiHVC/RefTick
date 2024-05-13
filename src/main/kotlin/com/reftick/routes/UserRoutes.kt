@@ -43,29 +43,32 @@ fun Route.userRouting() {
             //call.respond(FreeMarkerContent("edit.ftl", mapOf("user" to dao.user(username))))
             call.respond(mapOf("user" to dao.user(username)))
         }
-        post {
-            /*val user = call.receive<User>()
-            userBase.add(user)
-            call.respondText("User successfully created!", status = HttpStatusCode.Created)*/
-            val formParameters = call.receiveParameters()
+        /*post {
+            val user = call.receive<User>()
+            // userBase.add(user)
+            dao.addNewUser(user)
+            call.respondText("User successfully created!", status = HttpStatusCode.Created)
+            /*val formParameters = call.receiveParameters()
             val username = formParameters.getOrFail("username")
             val firstName = formParameters.getOrFail("firstName")
             val lastName = formParameters.getOrFail("lastName")
             val email = formParameters.getOrFail("email")
             val password = formParameters.getOrFail("password")
-            val user = dao.addNewUser(username, firstName, lastName, email, password)
-            call.respondRedirect("/users/${user?.username}")
-        }
-        /*delete("{username?}") {
+            val user = dao.addNewUser(username, firstName, lastName, email, password)2
+            call.respondRedirect("/users/${user?.username}")*/
+        } */
+        delete("{username?}") {
             val username = call.parameters["username"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            if (userBase.removeIf { it.username == username }) {
+            dao.deleteUser(username)
+            call.respond(HttpStatusCode.OK)
+            /* if (userBase.removeIf { it.username == username }) {
                 call.respondText("User successfully obliterated!", status = HttpStatusCode.Accepted)
             } else {
                 call.respondText("User Not Found", status = HttpStatusCode.NotFound)
-            }
+            } */
 
-        }*/
-        post("{username}") {
+        }
+        /*post("{username}") {
             val username = call.parameters.getOrFail("username")
             val formParameters = call.receiveParameters()
             when (formParameters.getOrFail("_action")) {
@@ -82,6 +85,13 @@ fun Route.userRouting() {
                     call.respondRedirect("/users")
                 }
             }
+        } */
+    }
+    route("/signup") {
+        post {
+            val user = call.receive<User>()
+            dao.addNewUser(user)
+            call.respondText("User successfully created!", status = HttpStatusCode.Created)
         }
     }
 }
