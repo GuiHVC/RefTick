@@ -31,8 +31,8 @@
     </br>
 
     <div>
-    <button onclick="postLogin()">Login</button>
-    <button onclick="postSignUp()">Sign up</button>
+    <button onclick="logIn()">Login</button>
+    <button onclick="signUp()">Sign up</button>
     <button onclick="listUsers()">List</button>
     </div>
 </div>
@@ -57,7 +57,7 @@
     const get = ( url, params, headers ) => request( url, params, 'GET', headers );
     const post = ( url, params, headers ) => request( url, params, 'POST', headers );
 
-    function postSignUp() {
+    function signUp() {
         username = document.querySelector('input[name="username"]').value
         firstName = document.querySelector('input[name="firstName"]').value
         lastName = document.querySelector('input[name="lastName"]').value
@@ -82,6 +82,24 @@
         })
     }
 
+    function logIn() {
+        email = document.querySelector('input[name="email"]').value
+        password = document.querySelector('input[name="password"]').value
+        if(email == '' || password == '') {
+            alert('Please fill email and password')
+            return;
+        }
+        get('localhost:8080/login', {
+            "email": email,
+            "password": password
+        }, {
+            'Content-Type': 'application/json'
+        }).then(response => response.text()).then(data => {
+            alert('User logged in successfully')
+        }).catch(error => {
+            console.error('Error:', error);
+        })
+    }
 
     function listUsers() {
         get('http://localhost:8080').then(response => response.json()).then(data => {

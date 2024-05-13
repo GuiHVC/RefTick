@@ -8,7 +8,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import com.reftick.dao.*
 import io.ktor.server.freemarker.*
+import io.ktor.server.sessions.*
 import io.ktor.server.util.*
+import java.net.URLDecoder
 
 fun Route.userRouting() {
     // Corrigir tudo depois, a lista será um arquivo, não uma lista (frase estranha btw)
@@ -92,6 +94,13 @@ fun Route.userRouting() {
             val user = call.receive<User>()
             dao.addNewUser(user)
             call.respondText("User successfully created!", status = HttpStatusCode.Created)
+        }
+    }
+    route("/login") {
+        get {
+            val email = URLDecoder.decode(call.request.queryParameters["email"], "UTF-8")
+            call.sessions.set(UserSession(id = "123" , count = 0))
+            call.respondRedirect("/user")
         }
     }
 }
