@@ -18,7 +18,7 @@ class DAOFacadeImpl : DAOFacade {
         Users.selectAll().map(::resultRowToUser)
     }
 
-    override suspend fun user(username: String): User? = dbQuery {
+    override suspend fun findUsername(username: String): User? = dbQuery {
         Users
             .select { Users.username eq username }
             .map(::resultRowToUser)
@@ -53,6 +53,13 @@ class DAOFacadeImpl : DAOFacade {
 
     override suspend fun deleteUser(username: String): Boolean = dbQuery {
         Users.deleteWhere { Users.username eq username } > 0
+    }
+
+    override suspend fun findEmail(email: String): User? = dbQuery {
+        Users
+            .select { Users.email eq email }
+            .map(::resultRowToUser)
+            .singleOrNull()
     }
 }
 

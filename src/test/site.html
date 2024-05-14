@@ -15,9 +15,9 @@
     </br>
 
     <div>
-    <label for="firstName"><b>Email</b></label>
+    <label for="firstName"><b>firstName</b></label>
     <input type="text" placeholder="Enter First Name" name="firstName" required>
-    <label for="lastName"><b>Email</b></label>
+    <label for="lastName"><b>lastName</b></label>
     <input type="text" placeholder="Enter Last Name" name="lastName" required>
     </div>
     </br>
@@ -34,28 +34,28 @@
     <button onclick="logIn()">Login</button>
     <button onclick="signUp()">Sign up</button>
     <button onclick="listUsers()">List</button>
+    <button onclick="deleteUser()">Delete</button>
+    <button onclick="logOut()">Logout</button>
     </div>
 </div>
 
 </br>
-<button onclick="fetchData()">Fetch Data</button>
 
 <div id="result"></div>
 
 <script>
-    const request = ( url, params = {}, method = 'GET', headers = {}) => {
-        let options = {method};
-        options.headers = headers
-        if ( 'GET' === method ) {
-            url += '?' + ( new URLSearchParams( params ) ).toString();
+    const request = (url, params = {}, method = 'GET', headers = {}) => {
+        let options = { "method": method , "headers" : headers , credentials: 'include'};
+        if ('GET' === method) {
+            url += '?' + (new URLSearchParams(params)).toString();
         } else {
-            options.body = JSON.stringify( params );
+            options.body = JSON.stringify(params);
         }
-
-        return fetch( url, options );
+        return fetch(url, options);
     };
     const get = ( url, params, headers ) => request( url, params, 'GET', headers );
     const post = ( url, params, headers ) => request( url, params, 'POST', headers );
+    const del = ( url, params, headers ) => request( url, params, 'GET', headers );
 
     function signUp() {
         username = document.querySelector('input[name="username"]').value
@@ -76,7 +76,8 @@
         }, {
             'Content-Type': 'application/json'
         }).then(response => response.text()).then(data => {
-            alert('User created successfully')
+
+            alert(data)
         }).catch(error => {
             console.error('Error:', error);
         })
@@ -89,13 +90,11 @@
             alert('Please fill email and password')
             return;
         }
-        get('localhost:8080/login', {
+        get('http://localhost:8080/login', {
             "email": email,
             "password": password
-        }, {
-            'Content-Type': 'application/json'
         }).then(response => response.text()).then(data => {
-            alert('User logged in successfully')
+            alert(data)
         }).catch(error => {
             console.error('Error:', error);
         })
@@ -107,6 +106,22 @@
         }).catch(error => {
             console.error('Error:', error);
         });
+    }
+
+    function deleteUser() {
+        del('http://localhost:8080/kill').then(response => response.text()).then(data => {
+            alert(data)
+        }).catch(error => {
+            console.error('Error:', error);
+        })
+    }
+
+    function logOut() {
+        get('http://localhost:8080/logout').then(response => response.text()).then(data => {
+            alert(data)
+        }).catch(error => {
+            console.error('Error:', error);
+        })
     }
 
     // function fetchData() {

@@ -38,12 +38,12 @@ fun Route.userRouting() {
             call.respond(user)*/
             val username = call.parameters.getOrFail("username")
             //call.respond(FreeMarkerContent("show.ftl", mapOf("user" to dao.user(username))))
-            call.respond(mapOf("user" to dao.user(username)))
+            call.respond(mapOf("user" to dao.findUsername(username)))
         }
         get("{username}/edit") {
             val username = call.parameters.getOrFail("username")
             //call.respond(FreeMarkerContent("edit.ftl", mapOf("user" to dao.user(username))))
-            call.respond(mapOf("user" to dao.user(username)))
+            call.respond(mapOf("user" to dao.findUsername(username)))
         }
         /*post {
             val user = call.receive<User>()
@@ -59,17 +59,23 @@ fun Route.userRouting() {
             val user = dao.addNewUser(username, firstName, lastName, email, password)2
             call.respondRedirect("/users/${user?.username}")*/
         } */
-        delete("{username?}") {
-            val username = call.parameters["username"] ?: return@delete call.respond(HttpStatusCode.BadRequest)
-            dao.deleteUser(username)
-            call.respond(HttpStatusCode.OK)
+        /*delete {
+            val session = call.sessions.get<UserSession>()
+            if (session == null) {
+                call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
+                return@delete
+            }
+            dao.deleteUser(session.id)
+            call.sessions.clear<UserSession>()
+            call.respondText("User deleted", status = HttpStatusCode.OK)
+
             /* if (userBase.removeIf { it.username == username }) {
                 call.respondText("User successfully obliterated!", status = HttpStatusCode.Accepted)
             } else {
                 call.respondText("User Not Found", status = HttpStatusCode.NotFound)
             } */
 
-        }
+        }*/
         /*post("{username}") {
             val username = call.parameters.getOrFail("username")
             val formParameters = call.receiveParameters()
@@ -92,15 +98,58 @@ fun Route.userRouting() {
     route("/signup") {
         post {
             val user = call.receive<User>()
-            dao.addNewUser(user)
-            call.respondText("User successfully created!", status = HttpStatusCode.Created)
+            if (dao.findUsername(user.username) != null) {
+                call.respondText("User already exists", status = HttpStatusCode.Conflict)
+                return@post
+            }
+            else if (dao.findEmail(user.email) != null) {
+                call.respondText("Email already exists", status = HttpStatusCode.Conflict)
+                return@post
+            }
+            else {
+                dao.addNewUser(user)
+                call.respondText("User successfully created!", status = HttpStatusCode.Created)
+            }
         }
     }
     route("/login") {
         get {
-            val email = URLDecoder.decode(call.request.queryParameters["email"], "UTF-8")
-            call.sessions.set(UserSession(id = "123" , count = 0))
-            call.respondRedirect("/user")
+            val email = URLDecoder.decode(call.request.queryParameters["email"], "UTF-8") ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val password = URLDecoder.decode(call.request.queryParameters["password"], "UTF-8") ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val user = dao.findEmail(email)
+            if (user != null) {
+                if(user.password == password){
+                    call.sessions.set(UserSession(id = user.username))
+                    call.respondText("User logged in", status = HttpStatusCode.OK)
+                }
+                else{
+                    call.respondText("Incorrect password", status = HttpStatusCode.Unauthorized)
+                }
+            } else {
+                call.respondText("User not found", status = HttpStatusCode.Unauthorized)
+            }
+        }
+    }
+    route("/logout") {
+        get {
+            call.sessions.clear<UserSession>()
+            call.respondText("User logged out", status = HttpStatusCode.OK)
+        }
+    }
+    route("/kill") {
+        get {
+            val session = call.sessions.get<UserSession>()
+            if (session == null) {
+                call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
+                return@get
+            }
+            dao.deleteUser(session.id)
+            call.sessions.clear<UserSession>()
+            call.respondText("User deleted", status = HttpStatusCode.OK)
         }
     }
 }

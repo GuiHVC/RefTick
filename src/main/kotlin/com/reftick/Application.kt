@@ -23,9 +23,13 @@ fun main() {
             allowHeader(HttpHeaders.ContentType)
             allowHeader("X-Requested-With")
             allowHeader(HttpHeaders.Origin)
+            allowCredentials = true
         }
         install(Sessions){
-            cookie<UserSession>("user_session", SessionStorageMemory())
+            cookie<UserSession>("UserSession", SessionStorageMemory()){
+                cookie.extensions["SameSite"] = "None"
+                cookie.secure = true
+            }//,directorySessionStorage(File("build/.sessions")))
         }
     DatabaseSingleton.init()
     /*install(FreeMarker) {
