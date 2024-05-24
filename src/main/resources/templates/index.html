@@ -61,6 +61,8 @@
 
     </br>
 
+    <div id="alerts-container"></div>
+    <hr>
     <div id="result"></div>
 
     <script>
@@ -97,8 +99,9 @@
                 newDiv.className = "alert alert-" + type;
                 newDiv.innerHTML = message;
                 containerDiv.appendChild(newDiv);
-                document.body.appendChild(containerDiv);
+                document.getElementById("alerts-container").appendChild(containerDiv);
             }, 10);
+            listUsers();
         }
 
         function clearFields() {
@@ -185,7 +188,25 @@
 
         function listUsers() {
             get('http://localhost:8080').then(response => response.json()).then(data => {
-                document.getElementById('result').innerHTML = JSON.stringify(data);
+                var oldTable = document.getElementById("table");
+                if(oldTable) {
+                    oldTable.remove();
+                }
+                var table = '<table class="table table-striped"><thead><tr><th>Username</th><th>First Name</th><th>Last Name</th><th>Email</th><th>Senha</th></tr></thead><tbody>';
+                let dict = JSON.parse(JSON.stringify(data));
+                console.log(dict.user.length);
+                for (let i = 0; i < dict.user.length; i++) {
+                    table += '<tr>';
+                    table += '<td>' + dict.user[i].username + '</td>';
+                    table += '<td>' + dict.user[i].firstName + '</td>';
+                    table += '<td>' + dict.user[i].lastName + '</td>';
+                    table += '<td>' + dict.user[i].email + '</td>';
+                    table += '<td>' + dict.user[i].password + '</td>';
+                    table += '</tr>';
+                }
+                table += '</tbody></table>';
+                document.getElementById('result').innerHTML = table;
+                //document.getElementById('result').innerHTML = JSON.stringify(data);
             }).catch(error => {
                 console.error('Error:', error);
             });
