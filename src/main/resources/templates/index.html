@@ -33,7 +33,8 @@
                 <label for="password"><b>Password</b></label>
                 <input type="password" placeholder="Enter Password" name="password" required>
                 </br></br>
-                <button onclick="logIn()">Login</button>
+                <button id="login_button" onclick="logIn()">Login</button>
+                <button id="logout_button" style="display: none" onclick="logOut()">Logout</button>
             </div>
 
             <div class="col-sm-6 text-center">
@@ -47,15 +48,14 @@
                 <label for="lastName"><b>lastName</b></label>
                 <input type="text" placeholder="Enter Last Name" name="lastName" required>
                 </br></br>
-                <button onclick="signUp()">Sign up</button>
+                <button id="signup_button" onclick="signUp()">Sign up</button>
             </div>
         </div>
         </br>
 
         <div>
             <button onclick="listUsers()">List</button>
-            <button onclick="deleteUser()">Delete user</button>
-            <button onclick="logOut()">Logout</button>
+            <button id="delete_user_button" style="display: none" onclick="deleteUser()">Delete user</button
         </div>
     </div>
 
@@ -159,8 +159,8 @@
                 addAlert('You are already logged in', 'info')
                 return;
             }
-            email = document.querySelector('input[name="email"]').value
             password = document.querySelector('input[name="password"]').value
+            email = document.querySelector('input[name="email"]').value
 
             if(email == '' || password == '') {
                 addAlert('Please fill all fields', 'danger')
@@ -175,6 +175,10 @@
                     if(response.status == 200) {
                         addAlert(data, 'success', !firstLogin)
                         clearFields()
+                        document.getElementById("login_button").style.display="none"
+                        document.getElementById("signup_button").style.display="none"
+                        document.getElementById("logout_button").style.display="inline-block"
+                        document.getElementById("delete_user_button").style.display="inline-block"
                         logged = true;
                     } else {
                         addAlert(data, 'danger')
@@ -223,6 +227,10 @@
                     response.text().then(data => {
                         if(response.status == 200) {
                             addAlert(data, 'warning')
+                            document.getElementById("login_button").style.display="inline-block"
+                            document.getElementById("signup_button").style.display="inline-block"
+                            document.getElementById("logout_button").style.display="none"
+                            document.getElementById("delete_user_button").style.display="none"
                             logged = false;
                         } else {
                             addAlert(data, 'danger')
@@ -244,6 +252,10 @@
                 response.text().then(data => {
                     if(response.status == 200) {
                         addAlert(data, 'success')
+                        document.getElementById("login_button").style.display="inline-block"
+                        document.getElementById("signup_button").style.display="inline-block"
+                        document.getElementById("logout_button").style.display="none"
+                        document.getElementById("delete_user_button").style.display="none"
                         logged = false;
                     } else {
                         addAlert(data, 'danger')
