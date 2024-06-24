@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reftick</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <div id="settings" class="container">
+        <label><b>Number of images:</b></label>
+        <input type="text" name="numImage" required>
+        </br>
+
+        <label><b>Time per image:</b></label>
+        <select id="timeImageMin" name="timeImageMin" required>
+            <option value="">minutes</option>
+            <script>
+                for(var i = 0; i <= 59; i++){
+                    document.write('<option value="'+i+'">'+i+'</option>');
+                }
+            </script>
+        </select> min
+        <select id="timeImageSec" name="timeImageSec" required>
+            <option value="">seconds</option>
+            <script>
+                for(var i = 0; i <= 59; i++){
+                    document.write('<option value="'+i+'">'+i+'</option>');
+                }
+            </script>
+        </select> sec
+        </br>
+
+        <h3>Image tags</h3>
+        <button onclick="unmarkAll()">Unmark all</button>
+        </br>
+
+        <div class="col-sm-4">
+            <h5><strong>Landscapes</strong></h5>
+            <div class="checkbox">
+                <label><input type="checkbox" value="mountains">Mountains</label>
+                </br>
+                <label><input type="checkbox" value="beach">Beach</label>
+                </br>
+                <label><input type="checkbox" value="building">Building</label>
+                </br>
+                <label><input type="checkbox" value="fields">Fields</label>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h5><strong>Veichles</strong></h5>
+            <div class="checkbox">
+                <label><input type="checkbox" value="cars">Cars</label>
+                </br>
+                <label><input type="checkbox" value="motorcycles">Motorcycles</label>
+            </div>
+            <h5><strong>People</strong></h5>
+            <div class="checkbox">
+                <label><input type="checkbox" value="portraits">Portaits</label>
+                </br>
+                <label><input type="checkbox" value="poses">Poses</label>
+                </br>
+                <label><input type="checkbox" value="clothing">Clothing</label>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h5><strong>Class 3</strong></h5>
+            <div class="checkbox">
+                <label><input type="checkbox" value="tag1">Tag 1</label>
+                </br>
+                <label><input type="checkbox" value="tag2">Tag 2</label>
+            </div>
+        </div>
+    </div>
+    </br>
+
+    <div class="container text-center">
+        <button id="start_button" onclick="startExercise()">Start exercise</button>
+    </div>
+
+
+
+
+    <script>
+        function addAlert(message, type, deleteOld = true) {
+            if (deleteOld) {
+                var alerts = document.getElementsByClassName('alert');
+                for (var i = 0; i < alerts.length; i++) {
+                    alerts[i].remove();
+                }
+            }
+
+            var alert = document.createElement('div');
+            alert.className = 'alert alert-' + type;
+            alert.innerHTML = message;
+            document.body.appendChild(alert);
+
+            setTimeout(function() {
+                var newDiv = document.createElement("div");
+                newDiv.id = "alert";
+                var containerDiv = document.createElement("div");
+                containerDiv.className = "container";
+
+                newDiv.className = "alert alert-" + type;
+                newDiv.innerHTML = message;
+                containerDiv.appendChild(newDiv);
+            }, 10);
+        }
+
+
+        function unmarkAll(){
+            var checkboxes = document.getElementsByTagName('input');
+            for (var i = 0; i < checkboxes.length; i++){
+                if (checkboxes[i].type == 'checkbox'){
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+
+
+        function startExercise(){
+            var numImage = document.getElementsByName('numImage')[0].value;
+            var timeImageMin = document.getElementsByName('timeImageMin')[0].value;
+            var timeImageSec = document.getElementsByName('timeImageSec')[0].value;
+
+            var tags = [];
+            var checkboxes = document.getElementsByTagName('input');
+            for (var i = 0; i < checkboxes.length; i++){
+                if (checkboxes[i].type == 'checkbox' && checkboxes[i].checked){
+                    tags.push(checkboxes[i].value);
+                }
+            }
+
+            if (numImage == '' || timeImageMin == '' || timeImageSec == ''){
+                addAlert('Please fill all the fields', 'danger')
+            }
+            else if (tags.length == 0){
+                addAlert('Please select at least one tag', 'danger')
+            }
+            else{
+                var alerts = document.getElementsByClassName('alert');
+                for (var i = 0; i < alerts.length; i++) {
+                    alerts[i].remove();
+                }
+                document.getElementById('settings').style.display="none"
+                document.getElementById('start_button').style.display="none"
+
+                var images = [];
+                getImages(tags, numImage, images);
+                runExercise(timeImageMin, timeImageSec, images);
+            }
+        }
+
+
+        function getImages(tags, numImage, images){
+            // TODO: Implement the function to get images from the datbase
+            images.push('https://static.wikia.nocookie.net/unanything/images/a/a9/Ulqzhfv6j6g21.png/revision/latest?cb=20210823162238')
+            images.push('https://www.w3schools.com/w3images/mountains.jpg')
+        }
+
+
+        function runExercise(timeImageMin, timeImageSec, images){
+            var timerMin= timeImageMin;
+            var timerSec= timeImageSec;
+            var timer = document.createElement('div');
+            timer.className = 'container text-center';
+            timer.style.fontSize = '50px';
+            timer.innerHTML = timerMin + ' : ' + timerSec;
+            document.body.appendChild(timer);
+
+            var timerInterval = setInterval(function(){
+                if (timerSec == 0){
+                    timerSec = 59;
+                    timerMin--;
+                }
+                else {
+                    timerSec--;
+                }
+                timer.innerHTML = timerMin + ' : ' + timerSec;
+            }, 1000);
+
+            var index = 0;
+            var pauseButton = document.createElement('button');
+            pauseButton.innerHTML = 'Pause';
+            var resumeButton = document.createElement('button');
+            resumeButton.innerHTML = 'Resume';
+            resumeButton.style.display = 'none';
+            var stopButton = document.createElement('button');
+            stopButton.innerHTML = 'Stop';
+            var image = document.createElement('img');
+            image.className = 'img-thumbnail center-block';
+            image.src = images[index];
+            image.style.objectFit = 'contain';
+            var imageContainer = document.createElement('div');
+            imageContainer.className = 'container text-center';
+            // TODO: Make container correct size and fit image
+            imageContainer.style.height = '100px';
+            imageContainer.appendChild(image);
+            document.body.appendChild(imageContainer);
+
+            var imageInterval = setInterval(function(){
+                index++;
+                if (index >= images.length){
+                    clearInterval(imageInterval);
+                    clearInterval(timerInterval);
+                    document.getElementById('settings').style.display="block";
+                    document.getElementById('start_button').style.display="inline-block";
+                    image.remove();
+                    timer.remove();
+                }
+                else {
+                    image.src = images[index];
+                    timerMin = timeImageMin;
+                    timerSec = timeImageSec;
+                }
+            }, timeImageMin * 60 * 1000 + timeImageSec * 1000);
+        }
+
+    </script>
+</body>
+
+</html>
