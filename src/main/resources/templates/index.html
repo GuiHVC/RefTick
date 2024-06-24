@@ -12,13 +12,26 @@
 <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-
-    <div class='jumbotron text-center' style="display: flex; align-items: center; justify-content: center;">
-        <h1 style="margin-right: 20px;"> Reftick </h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <img src="ICON%20transparent.png" alt="Reftick" width="100" height="100">
-    </div>
-    <!-- Exercise drawing with reference images by other users -->
-
+        <a class="navbar-brand" href="#">Reftick</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a id="navbar_upload" class="nav-link" href="upload.html" style="display: none">Upload image</a>
+                </li>
+                <li class="nav-item">
+                    <a id="navbar_myimages" class="nav-link" href="myimages.html" style="display: none">My images</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
     <div class="container">
         <div class="row">
@@ -53,12 +66,8 @@
         <div class="text-center">
             <button id ="go_to_reftick_button" onclick="goToReftick()">Go to reference exercising</button>
         </div>
-        </br>
-        <div class="text-center">
-            <button id ="upload_image_button" onclick="goToUploadImage()">Upload image</button>
-        </div>
         <div>
-            <button id="delete_user_button" style="display: none" onclick="deleteUser()">Delete user</button
+            <button id="delete_user_button" style="display: none" onclick="deleteUser()">Delete user</button>
         </div>
         <div>
             <button onclick="listUsers()">List</button>
@@ -89,6 +98,7 @@
         const post = ( url, params, headers ) => request( url, params, 'POST', headers );
         const del = ( url, params, headers ) => request( url, params, 'GET', headers );
 
+
         function addAlert(message, type, deleteOld = true) {
             if(deleteOld) {
                 var oldAlert = document.getElementById("alert");
@@ -112,6 +122,7 @@
             listUsers();
         }
 
+
         function clearFields() {
             document.querySelector('input[name="username"]').value = ''
             document.querySelector('input[name="firstName"]').value = ''
@@ -119,6 +130,7 @@
             document.querySelector('input[name="email"]').value = ''
             document.querySelector('input[name="password"]').value = ''
         }
+
 
         function signUp() {
             if(logged){
@@ -162,6 +174,7 @@
             })
         }
 
+
         function logIn(firstLogin = false) {
             if(logged){
                 addAlert('You are already logged in', 'info')
@@ -187,6 +200,9 @@
                         document.getElementById("signup_button").style.display="none"
                         document.getElementById("logout_button").style.display="inline-block"
                         document.getElementById("delete_user_button").style.display="inline-block"
+                        document.getElementById("navbar_upload").style.display="inline-block"
+                        document.getElementById("navbar_myimages").style.display="inline-block"
+                        // TODO cookies to maintain session between pages
                         logged = true;
                     } else {
                         addAlert(data, 'danger')
@@ -197,6 +213,7 @@
                 console.error('Error:', error);
             });
         }
+
 
         function listUsers() {
             get('http://localhost:8080').then(response => response.json()).then(data => {
@@ -224,6 +241,7 @@
             });
         }
 
+
         function deleteUser() {
             if(!logged){
                 addAlert('You are not logged in', 'info')
@@ -239,6 +257,8 @@
                             document.getElementById("signup_button").style.display="inline-block"
                             document.getElementById("logout_button").style.display="none"
                             document.getElementById("delete_user_button").style.display="none"
+                            document.getElementById("navbar_upload").style.display="none"
+                            document.getElementById("navbar_myimages").style.display="none"
                             logged = false;
                         } else {
                             addAlert(data, 'danger')
@@ -249,6 +269,7 @@
                 })
             }
         }
+
 
         function logOut() {
             if(!logged){
@@ -264,6 +285,8 @@
                         document.getElementById("signup_button").style.display="inline-block"
                         document.getElementById("logout_button").style.display="none"
                         document.getElementById("delete_user_button").style.display="none"
+                        document.getElementById("navbar_upload").style.display="none"
+                        document.getElementById("navbar_myimages").style.display="none"
                         logged = false;
                     } else {
                         addAlert(data, 'danger')
@@ -274,9 +297,11 @@
             })
         }
 
+
         function goToReftick() {
             window.location.href = reftick_page_location
         }
+
     </script>
 </body>
 

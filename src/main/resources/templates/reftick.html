@@ -13,6 +13,27 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
 
+    <nav id="navbar" class="navbar navbar-expand-lg navbar-light bg-light">
+        <img src="ICON%20transparent.png" alt="Reftick" width="100" height="100">
+        <a class="navbar-brand" href="#">Reftick</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a id="navbar_upload" class="nav-link" href="upload.html" style="display: none">Upload image</a>
+                </li>
+                <li class="nav-item">
+                    <a id="navbar_myimages" class="nav-link" href="myimages.html" style="display: none">My images</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div id="settings" class="container">
         <label><b>Number of images:</b></label>
         <input type="text" name="numImage" required>
@@ -41,42 +62,6 @@
         <button onclick="unmarkAll()">Unmark all</button>
         </br>
 
-        <div class="col-sm-4">
-            <h5><strong>Landscapes</strong></h5>
-            <div class="checkbox">
-                <label><input type="checkbox" value="mountains">Mountains</label>
-                </br>
-                <label><input type="checkbox" value="beach">Beach</label>
-                </br>
-                <label><input type="checkbox" value="building">Building</label>
-                </br>
-                <label><input type="checkbox" value="fields">Fields</label>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <h5><strong>Veichles</strong></h5>
-            <div class="checkbox">
-                <label><input type="checkbox" value="cars">Cars</label>
-                </br>
-                <label><input type="checkbox" value="motorcycles">Motorcycles</label>
-            </div>
-            <h5><strong>People</strong></h5>
-            <div class="checkbox">
-                <label><input type="checkbox" value="portraits">Portaits</label>
-                </br>
-                <label><input type="checkbox" value="poses">Poses</label>
-                </br>
-                <label><input type="checkbox" value="clothing">Clothing</label>
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <h5><strong>Class 3</strong></h5>
-            <div class="checkbox">
-                <label><input type="checkbox" value="tag1">Tag 1</label>
-                </br>
-                <label><input type="checkbox" value="tag2">Tag 2</label>
-            </div>
-        </div>
     </div>
     </br>
 
@@ -84,10 +69,56 @@
         <button id="start_button" onclick="startExercise()">Start exercise</button>
     </div>
 
+    <div id="timer" class="container text-center" style="font-size: 50px"></div>
+    <div id="image_container" class="container text-center" style="height: 100px; display: none">
+        <img id="image" class="img" style="width: 500px; height: 400px; border: 2px solid black; object-fit: contain">
+    </div>
 
 
 
     <script>
+        var tagsClasses = {
+            "Landscapes": ["mountains", "beach", "building", "fields"],
+            "Vehicles": ["cars", "motorcycles"],
+            "People": ["portraits", "poses", "clothing"],
+            "Class 3": ["tag1", "tag2", "tag3"]
+        };
+
+        var container = document.getElementById('settings');
+
+        // Iterate over the tagsClasses dictionary and add to the page
+        for (var classTag in tagsClasses) {
+            // Create a new col for the class
+            var classDiv = document.createElement('div');
+            classDiv.className = 'col-sm-4';
+            // Add the class name to the col
+            var classHeader = document.createElement('h5');
+            classHeader.innerHTML = '<strong>' + classTag + '</strong>';
+            classDiv.appendChild(classHeader);
+            // Create a new div for the classes
+            var classesDiv = document.createElement('div');
+            classesDiv.className = 'checkbox';
+
+            // Add tags in class
+            for (var i = 0; i < tagsClasses[classTag].length; i++) {
+                var classLabel = document.createElement('label');
+                // Create a new checkbox for the tag
+                var tagCheckbox = document.createElement('input');
+                tagCheckbox.type = 'checkbox';
+                tagCheckbox.value = tagsClasses[classTag][i];
+                // Add the checkbox and the class name to the label
+                classLabel.appendChild(tagCheckbox);
+                classLabel.innerHTML += tagsClasses[classTag][i];
+                // Add the label to the classes div
+                classesDiv.appendChild(classLabel);
+                classesDiv.appendChild(document.createElement('br'));
+            }
+
+            classDiv.appendChild(classesDiv);
+            container.appendChild(classDiv);
+        }
+
+
         function addAlert(message, type, deleteOld = true) {
             if (deleteOld) {
                 var alerts = document.getElementsByClassName('alert');
@@ -149,6 +180,7 @@
                     alerts[i].remove();
                 }
                 document.getElementById('settings').style.display="none"
+                document.getElementById('navbar').style.display="none"
                 document.getElementById('start_button').style.display="none"
 
                 var images = [];
@@ -168,11 +200,10 @@
         function runExercise(timeImageMin, timeImageSec, images){
             var timerMin= timeImageMin;
             var timerSec= timeImageSec;
-            var timer = document.createElement('div');
-            timer.className = 'container text-center';
-            timer.style.fontSize = '50px';
+            var timer = document.getElementById('timer');
+            timer.style.display = 'block';
+
             timer.innerHTML = timerMin + ' : ' + timerSec;
-            document.body.appendChild(timer);
 
             var timerInterval = setInterval(function(){
                 if (timerSec == 0){
@@ -193,16 +224,10 @@
             resumeButton.style.display = 'none';
             var stopButton = document.createElement('button');
             stopButton.innerHTML = 'Stop';
-            var image = document.createElement('img');
-            image.className = 'img-thumbnail center-block';
+            var image = document.getElementById('image');
             image.src = images[index];
-            image.style.objectFit = 'contain';
-            var imageContainer = document.createElement('div');
-            imageContainer.className = 'container text-center';
-            // TODO: Make container correct size and fit image
-            imageContainer.style.height = '100px';
-            imageContainer.appendChild(image);
-            document.body.appendChild(imageContainer);
+            var imageContainer = document.getElementById('image_container');
+            imageContainer.style.display = 'block';
 
             var imageInterval = setInterval(function(){
                 index++;
@@ -210,9 +235,10 @@
                     clearInterval(imageInterval);
                     clearInterval(timerInterval);
                     document.getElementById('settings').style.display="block";
+                    document.getElementById('navbar').style.display="flex";
                     document.getElementById('start_button').style.display="inline-block";
-                    image.remove();
-                    timer.remove();
+                    timer.style.display = 'none';
+                    imageContainer.style.display = 'none';
                 }
                 else {
                     image.src = images[index];
