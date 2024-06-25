@@ -1,6 +1,7 @@
 package com.reftick
 
 import com.reftick.dao.DatabaseSingleton
+import com.reftick.models.ImageDatabaseSingleton
 import com.reftick.models.UserSession
 import com.reftick.plugins.*
 import io.ktor.server.application.*
@@ -32,6 +33,7 @@ fun main() {
             }//,directorySessionStorage(File("build/.sessions")))
         }
     DatabaseSingleton.init()
+        //ImageDatabaseSingleton.init()
     /*install(FreeMarker) {
         templateLoader = ClassTemplateLoader(this::class.java.classLoader, "templates")
     }*/

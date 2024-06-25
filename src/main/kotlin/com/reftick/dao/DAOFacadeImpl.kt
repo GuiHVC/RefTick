@@ -65,10 +65,12 @@ class DAOFacadeImpl : DAOFacade {
 
 val dao: DAOFacade = DAOFacadeImpl().apply {
     runBlocking {
-        if(allUsers().isEmpty()) {
+        if(findEmail("admin1@usp.br") == null) {
             val guil = User("Guil", "Guilherme", "Cunha", "admin1@usp.br", "senha")
-            val adrielias = User("Adrielias", "Adriano", "Andrade", "admin2@usp.br", "senha")
             addNewUser(guil)
+        }
+        if(findEmail("admin2@usp.br") == null){
+            val adrielias = User("Adrielias", "Adriano", "Andrade", "admin2@usp.br", "senha")
             addNewUser(adrielias)
         }
     }

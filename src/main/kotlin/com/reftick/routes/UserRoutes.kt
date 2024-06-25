@@ -108,6 +108,7 @@ fun Route.userRouting() {
             }
             else {
                 dao.addNewUser(user)
+                call.sessions.set(UserSession(id = user.username))
                 call.respondText("User successfully created!", status = HttpStatusCode.Created)
             }
         }
