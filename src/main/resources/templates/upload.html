@@ -96,11 +96,18 @@
             tagDropdown.add(option);
         }
     }
-
     // Populate the tag dropdown when the page loads
     populateTagDropdown();
     // Populate the tag dropdown when the selected class changes
     classDropdown.addEventListener('change', populateTagDropdown);
+
+    // Show image preview when the user enters an image link
+    var imageLinkInput = document.querySelector('input[name="name"]');
+    var imagePreview = document.getElementById('preview');
+    imageLinkInput.addEventListener('input', function() {
+        imagePreview.src = imageLinkInput.value;
+    });
+
 
     function addAlert(message, type, deleteOld = true) {
         if (deleteOld) {
