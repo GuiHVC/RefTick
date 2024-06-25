@@ -35,6 +35,8 @@
     </nav>
 
     <div id="settings" class="container">
+        <h1 style="text-align: center">Exercise settings</h1>
+        </br>
         <label><b>Number of images:</b></label>
         <input type="text" name="numImage" required>
         </br>
@@ -58,9 +60,10 @@
         </select> sec
         </br>
 
-        <h3>Image tags</h3>
-        <button onclick="unmarkAll()">Unmark all</button>
-        </br>
+        <div style="display: flex; align-items: center;">
+            <h3>Image tags</h3>
+            <button onclick="unmarkAll()" style="margin-top: 15px; margin-left: 10px">Unmark all</button>
+        </div>
 
     </div>
     </br>
@@ -72,6 +75,10 @@
     <div id="timer" class="container text-center" style="font-size: 50px"></div>
     <div id="image_container" class="container text-center" style="height: 100px; display: none">
         <img id="image" class="img" style="width: 500px; height: 400px; border: 2px solid black; object-fit: contain">
+    </div>
+    </br>
+    <div class="container text-center">
+        <button id="quit_button" onclick="quitExercise()" style="display: none; margin-top: 300px">Quit exercise</button>
     </div>
 
 
@@ -217,17 +224,11 @@
             }, 1000);
 
             var index = 0;
-            var pauseButton = document.createElement('button');
-            pauseButton.innerHTML = 'Pause';
-            var resumeButton = document.createElement('button');
-            resumeButton.innerHTML = 'Resume';
-            resumeButton.style.display = 'none';
-            var stopButton = document.createElement('button');
-            stopButton.innerHTML = 'Stop';
             var image = document.getElementById('image');
             image.src = images[index];
             var imageContainer = document.getElementById('image_container');
             imageContainer.style.display = 'block';
+            document.getElementById('quit_button').style.display = 'inline-block';
 
             var imageInterval = setInterval(function(){
                 index++;
@@ -237,6 +238,7 @@
                     document.getElementById('settings').style.display="block";
                     document.getElementById('navbar').style.display="flex";
                     document.getElementById('start_button').style.display="inline-block";
+                    document.getElementById('quit_button').style.display = 'none';
                     timer.style.display = 'none';
                     imageContainer.style.display = 'none';
                 }
@@ -246,6 +248,11 @@
                     timerSec = timeImageSec;
                 }
             }, timeImageMin * 60 * 1000 + timeImageSec * 1000);
+        }
+
+
+        function quitExercise(){
+            location.reload();
         }
 
     </script>
