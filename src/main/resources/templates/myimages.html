@@ -39,13 +39,7 @@
     </br>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4"></div>
-    </div>
-</div>
+<div class="container" style="display: flex; justify-content: center; flex-wrap: wrap"></div>
 
 </br>
 
@@ -58,44 +52,32 @@
 
     // Get the container to add the images
     var container = document.querySelector('.container');
-    for (var i = 0; i < images.length; i += 3) {
-        var row = document.createElement('div');
-        row.className = 'row';
+    for (var i = 0; i < images.length; i += 1) {
+        var thumbnail = document.createElement('div');
+        thumbnail.className = 'thumbnail';
+        thumbnail.style.margin = '10px 10px';
+        thumbnail.style.width = '30%';
+        thumbnail.style.display = 'flex';
+        thumbnail.style.flexDirection = 'column';
+        thumbnail.style.alignItems = 'center';
+        var image = document.createElement('img');
+        image.src = images[i];
+        thumbnail.appendChild(image);
 
-        // Add 3 images to the row
-        for (var j = 0; j < 3; j++) {
-            if (i + j < images.length) {
-                var col = document.createElement('div');
-                col.className = 'col-sm-4';
+        var deleteButton = document.createElement('button');
+        deleteButton.innerHTML = 'Delete';
+        deleteButton.addEventListener('click', function() {
+            deleteImage(thumbnail, deleteButton);
+        });
 
-                var thumbnail = document.createElement('div');
-                thumbnail.className = 'thumbnail';
-                thumbnail.style.display = 'flex';
-                thumbnail.style.flexDirection = 'column';
-                thumbnail.style.alignItems = 'center';
-                var image = document.createElement('img');
-                image.src = images[i + j];
-                image.style.width = '100%';
-                thumbnail.appendChild(image);
-
-                var deleteButton = document.createElement('button');
-                deleteButton.innerHTML = 'Delete';
-                deleteButton.addEventListener('click', function() {
-                    deleteImage(thumbnail, deleteButton);
-                });
-
-                col.appendChild(thumbnail);
-                thumbnail.appendChild(deleteButton);
-                row.appendChild(col);
-            }
-        }
-        // Add the row to the container
-        container.appendChild(row);
+        container.appendChild(thumbnail);
+        thumbnail.appendChild(deleteButton);
     }
 
 
     function deleteImage(thumbnail, deleteButton) {
         // TODO actually delete the image
+        // placeholder delete: removing image from databank and refreshing the page after is easier
         thumbnail.remove();
         deleteButton.remove();
         addAlert('Image deleted', 'success');
