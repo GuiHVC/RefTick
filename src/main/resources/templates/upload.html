@@ -25,6 +25,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">Home</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="reftick.html">Reference exercising</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="upload.html">Upload image</a>
             </li>
@@ -41,7 +44,9 @@
             <h1>Upload an image</h1>
             </br></br></br>
             <label for="imageLink"><b>Image link:</b></label>
-            <input type="text" name="name" required>
+            <input type="text" name="link" required>
+            <label for="imageAuthor"><b>Image author:</b></label>
+            <input type="text" name="author" required>
             </br></br>
             <label for="class"><b>Class:</b></label>
             <select id="class" name="class">
@@ -65,6 +70,33 @@
 
 
 <script>
+    const request = (url, params = {}, method = 'GET', headers = {}) => {
+        let options = { "method": method , "headers" : headers , credentials: 'include'};
+        if ('GET' === method) {
+            url += '?' + (new URLSearchParams(params)).toString();
+        } else {
+            options.body = JSON.stringify(params);
+        }
+        return fetch(url, options);
+    };
+    const get = ( url, params, headers ) => request( url, params, 'GET', headers );
+    const post = ( url, params, headers ) => request( url, params, 'POST', headers );
+
+    get('http://localhost:8080/checkLogin', {}).then(response => {
+        if (response.status === 200) {
+            response.text().then(data => {
+                if (data === 'false') {
+                    window.location.href = 'index.html';
+                }
+            })
+        } else {
+            window.location.href = 'index.html';
+        }
+    }).catch(error => {
+        window.location.href = 'index.html';
+    });
+
+
     var tagsClasses = {
         "Landscapes": ["mountains", "beach", "building", "fields"],
         "Vehicles": ["cars", "motorcycles"],
@@ -103,7 +135,7 @@
     classDropdown.addEventListener('change', populateTagDropdown);
 
     // Show image preview when the user enters an image link
-    var imageLinkInput = document.querySelector('input[name="name"]');
+    var imageLinkInput = document.querySelector('input[name="link"]');
     var imagePreview = document.getElementById('preview');
     imageLinkInput.addEventListener('input', function() {
         imagePreview.src = imageLinkInput.value;
@@ -137,11 +169,31 @@
 
 
     function uploadImage() {
-        if(document.querySelector('input[name="name"]').value === "") {
+        if(document.querySelector('input[name="link"]').value === "") {
             addAlert("Please enter an image link", "danger");
             return;
         }
-        // TODO get user data with cookies, and upload the image
+        if(document.querySelector('input[name="author"]').value === "") {
+            addAlert("Please enter an image author", "danger");
+            return;
+        }
+        post('http://localhost:8080/upload', {
+            imageLink: document.querySelector('input[name="link"]').value,
+            imageAuthor: document.querySelector('input[name="author"]').value,
+            tag: document.getElementById('tag').value
+        }, {
+            'Content-Type': 'application/json'
+        }).then(response => {
+            response.text().then(data => {
+                if (response.status === 200) {
+                    addAlert(data, 'success');
+                } else {
+                    addAlert(data, 'danger');
+                }
+            })
+        }).catch(error => {
+            addAlert('Failed to upload image', 'danger');
+        })
     }
 
 </script>

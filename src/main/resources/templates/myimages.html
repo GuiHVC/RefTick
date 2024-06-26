@@ -25,6 +25,9 @@
             <li class="nav-item active">
                 <a class="nav-link" href="index.html">Home</a>
             </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="reftick.html">Reference exercising</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="upload.html">Upload image</a>
             </li>
@@ -48,9 +51,54 @@
 
 
 <script>
-    // TODO get the actual images
-    const link = "https://upload.wikimedia.org/wikipedia/commons/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg";
-    var images = [link, link, link, link, link];
+    //const link = "https://upload.wikimedia.org/wikipedia/commons/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg";
+    //var images = [link, link, link, link, link];
+    const request = (url, params = {}, method = 'GET', headers = {}) => {
+        let options = { "method": method , "headers" : headers , credentials: 'include'};
+        if ('GET' === method) {
+            url += '?' + (new URLSearchParams(params)).toString();
+        } else {
+            options.body = JSON.stringify(params);
+        }
+        return fetch(url, options);
+    };
+    const get = ( url, params, headers ) => request( url, params, 'GET', headers );
+    const post = ( url, params, headers ) => request( url, params, 'POST', headers );
+
+
+    get('http://localhost:8080/checkLogin', {}).then(response => {
+        if (response.status === 200) {
+            response.text().then(data => {
+                if (data === 'false') {
+                    window.location.href = 'index.html';
+                }
+            })
+        } else {
+            window.location.href = 'index.html';
+        }
+    }).catch(error => {
+        window.location.href = 'index.html';
+    });
+
+    var images = [];
+    get('http://localhost:8080/myimages', {}).then(response => {
+        if (response.status === 200) {
+            response.json().then(data => {
+                images = data.images;
+            });
+        } else {
+            addAlert('Failed to get images', 'danger');
+        }
+    }).catch(error => {
+        addAlert('Failed to get images', 'danger');
+    });
+
+    if(images.length === 0) {
+        document.createElement('small').innerHTML = 'You have no images yet. Upload some!';
+        document.createElement('h2').appendChild('small');
+        document.getElementsByClassName('container').appendChild('h2');
+    }
+
 
     // Get the container to add the images
     var container = document.querySelector('.container');

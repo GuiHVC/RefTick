@@ -25,6 +25,9 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="index.html">Home</a>
                 </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="reftick.html">Reference exercising</a>
+                </li>
                 <li class="nav-item">
                     <a id="navbar_upload" class="nav-link" href="upload.html" style="display: none">Upload image</a>
                 </li>
@@ -37,14 +40,14 @@
 
     <div style="text-align: center">
         <h1>Reftick</h1>
-        <h3> <small>Learn drawing by referencing other user's pictures!</small> </h3>
+        <h3> <small>Learn drawing by referencing pictures!</small> </h3>
     </div>
     <div class="container"><hr></div>
 
     <div class="container">
         <div class="row">
             <div class="col-sm-6 text-center">
-                <h3>Login <small>- login to upload images</small></h3>
+                <h3>Login <small id="login_text">- login to upload images</small></h3>
                 <label for="email" style="margin-left: 14px"><b>Email</b></label>
                 <input type="email" placeholder="Enter Email" name="email" required>
                 </br>
@@ -75,9 +78,9 @@
         <div class="text-center">
             <button id ="go_to_reftick_button" class="bigButton" onclick="goToReftick()">Go to reference exercising</button>
         </div>
-        <div>
+        <!--div>
             <button onclick="listUsers()">List</button>
-        </div>
+        </div-->
     </div>
 
     </br>
@@ -103,6 +106,23 @@
         const post = ( url, params, headers ) => request( url, params, 'POST', headers );
         const del = ( url, params, headers ) => request( url, params, 'GET', headers );
 
+        get('http://localhost:8080/checkLogin', {}).then(response => {
+            response.text().then(data => {
+                if(response.status == 200) {
+                    document.getElementById("login_button").style.display="none"
+                    document.getElementById("signup_button").style.display="none"
+                    document.getElementById("logout_button").style.display="inline-block"
+                    document.getElementById("delete_user_button").style.display="inline-block"
+                    document.getElementById("navbar_upload").style.display="inline-block"
+                    document.getElementById("navbar_myimages").style.display="inline-block"
+                    document.getElementById("login_text").innerHTML = "- logged in as " + data;
+                    logged = true;
+                }
+            })
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+
 
         function addAlert(message, type, deleteOld = true) {
             if(deleteOld) {
@@ -124,7 +144,7 @@
                 containerDiv.appendChild(newDiv);
                 document.getElementById("alerts-container").appendChild(containerDiv);
             }, 10);
-            listUsers();
+            //listUsers();
         }
 
 
@@ -167,9 +187,9 @@
                             oldAlert.remove();
                             oldAlert = document.getElementById("alert");
                         }
-                        logIn(true);
                         clearFields();
                         addAlert(data, 'success', false);
+                        location.reload();
                     } else {
                         addAlert(data, 'danger')
                     }
@@ -207,7 +227,7 @@
                         document.getElementById("delete_user_button").style.display="inline-block"
                         document.getElementById("navbar_upload").style.display="inline-block"
                         document.getElementById("navbar_myimages").style.display="inline-block"
-                        // TODO cookies to maintain session between pages
+                        document.getElementById("login_text").innerHTML = "- logged in as " + email;
                         logged = true;
                     } else {
                         addAlert(data, 'danger')
@@ -264,6 +284,7 @@
                             document.getElementById("delete_user_button").style.display="none"
                             document.getElementById("navbar_upload").style.display="none"
                             document.getElementById("navbar_myimages").style.display="none"
+                            document.getElementById("login_text").innerHTML = "- login to upload images";
                             logged = false;
                         } else {
                             addAlert(data, 'danger')
@@ -292,6 +313,7 @@
                         document.getElementById("delete_user_button").style.display="none"
                         document.getElementById("navbar_upload").style.display="none"
                         document.getElementById("navbar_myimages").style.display="none"
+                        document.getElementById("login_text").innerHTML = "- login to upload images";
                         logged = false;
                     } else {
                         addAlert(data, 'danger')

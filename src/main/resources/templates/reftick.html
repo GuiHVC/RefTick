@@ -25,6 +25,9 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="index.html">Home</a>
                 </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="reftick.html">Reference exercising</a>
+                </li>
                 <li class="nav-item">
                     <a id="navbar_upload" class="nav-link" href="upload.html" style="display: none">Upload image</a>
                 </li>
@@ -87,6 +90,30 @@
 
 
     <script>
+        const request = (url, params = {}, method = 'GET', headers = {}) => {
+            let options = { "method": method , "headers" : headers , credentials: 'include'};
+            if ('GET' === method) {
+                url += '?' + (new URLSearchParams(params)).toString();
+            } else {
+                options.body = JSON.stringify(params);
+            }
+            return fetch(url, options);
+        };
+        const get = ( url, params, headers ) => request( url, params, 'GET', headers );
+        const post = ( url, params, headers ) => request( url, params, 'POST', headers );
+
+        get('http://localhost:8080/checkLogin', {}).then(response => {
+            response.text().then(data => {
+                if(response.status == 200) {
+                    document.getElementById('navbar_upload').style.display = 'inline-block';
+                    document.getElementById('navbar_myimages').style.display = 'inline-block';
+                }
+            })
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+
+
         var tagsClasses = {
             "Landscapes": ["mountains", "beach", "building", "fields"],
             "Vehicles": ["cars", "motorcycles"],
@@ -194,14 +221,30 @@
                 document.getElementById('start_button').style.display="none"
 
                 var images = [];
-                getImages(tags, numImage, images);
+                images = getImages(tags, numImages);
                 runExercise(timeImageMin, timeImageSec, images);
             }
         }
 
 
-        function getImages(tags, numImage, images){
-            // TODO: Implement the function to get images from the datbase
+        function getImages(tags, numImages){
+            get('http://localhost:8080/challenge', {
+                tag: tags,
+                quantity: numImages
+            }, {
+                'Content-Type': 'application/json'
+            }).then(response => {
+                response.json().then(data => {
+                    if (response.status === 200) {
+                        return data;
+                    } else {
+                        addAlert(data, 'danger');
+                    }
+                })
+            }).catch(error => {
+                addAlert('Failed to get images', 'danger');
+            })
+            return
             images.push('https://static.wikia.nocookie.net/unanything/images/a/a9/Ulqzhfv6j6g21.png/revision/latest?cb=20210823162238')
             images.push('https://www.w3schools.com/w3images/mountains.jpg')
         }
