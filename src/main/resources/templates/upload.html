@@ -169,23 +169,28 @@
 
 
     function uploadImage() {
-        if(document.querySelector('input[name="link"]').value === "") {
+        imageLinkToSend = document.querySelector('input[name="link"]').value
+        imageAuthorToSend = document.querySelector('input[name="author"]').value
+        tagToSend = document.getElementById('tag').value
+        if(imageLinkToSend === ""){
             addAlert("Please enter an image link", "danger");
             return;
         }
-        if(document.querySelector('input[name="author"]').value === "") {
+        if(imageAuthorToSend === ""){
             addAlert("Please enter an image author", "danger");
             return;
         }
         post('http://localhost:8080/upload', {
-            imageLink: document.querySelector('input[name="link"]').value,
-            imageAuthor: document.querySelector('input[name="author"]').value,
-            tag: document.getElementById('tag').value
+            "id": "0", // This is a placeholder, the server will assign a new id
+            "url": imageLinkToSend,
+            "tag": tagToSend,
+            "uploader": "0", // This is a placeholder, the server will assign the correct username
+            "author": imageAuthorToSend,
         }, {
             'Content-Type': 'application/json'
         }).then(response => {
             response.text().then(data => {
-                if (response.status === 200) {
+                if (response.status === 201) {
                     addAlert(data, 'success');
                 } else {
                     addAlert(data, 'danger');

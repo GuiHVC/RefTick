@@ -164,24 +164,16 @@ fun Route.userRouting() {
                 call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
                 return@post
             }
-            val url = URLDecoder.decode(call.request.queryParameters["imageLink"], "UTF-8") ?: return@post call.respond(
-                HttpStatusCode.BadRequest
-            )
-            if(url.length > 1000){
+            val receivedImage = call.receive<Image>()
+            if (receivedImage.url.length > 1000) {
                 call.respondText("Url too big", status = HttpStatusCode.BadRequest)
                 return@post
             }
-            if(!url.contains(".jpg") && !url.contains(".jpeg") && !url.contains(".png")){
+            if (!receivedImage.url.contains(".jpg") && !receivedImage.url.contains(".jpeg") && !receivedImage.url.contains(".png")) {
                 call.respondText("Cannot recognize (please try [.jpg], [.jpeg] and [.png] urls", status = HttpStatusCode.BadRequest)
                 return@post
             }
-            val tag = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@post call.respond(
-                HttpStatusCode.BadRequest
-            )
-            val author = URLDecoder.decode(call.request.queryParameters["imageAuthor"], "UTF-8") ?: return@post call.respond(
-                HttpStatusCode.BadRequest
-            )
-            val image = Image(id = 0, url = url, tag = tag, uploader = session.id, author = author)
+            val image = Image(id = 0, url = receivedImage.url, tag = receivedImage.tag, uploader = session.id, author = receivedImage.author)
             img.addImage(image)
             call.respondText("Image uploaded", status = HttpStatusCode.Created)
         }
