@@ -1,6 +1,5 @@
 package com.reftick.models
 
-import com.reftick.models.Image
 
 interface ImageDatabase {
     suspend fun allImages(): List<Image>

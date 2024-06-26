@@ -7,9 +7,6 @@ import org.jetbrains.exposed.sql.*
 data class User(val username: String, val firstName: String, val lastName: String,
                 val email: String, val password: String)
 
-// Mudar isso depois, a lista deverá ser um arquivo
-// val userBase = mutableListOf<User>()
-
 object Users : Table() {
     val username = varchar("username", 255)
     val firstName = varchar("firstName", 255)

@@ -229,10 +229,8 @@
 
         function getImages(tags, numImages){
             get('http://localhost:8080/challenge', {
-                tag: tags,
-                quantity: numImages
-            }, {
-                'Content-Type': 'application/json'
+                "tag": tags,
+                "quantity": numImages
             }).then(response => {
                 response.json().then(data => {
                     if (response.status === 200) {

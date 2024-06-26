@@ -1,7 +1,6 @@
 package com.reftick.models
 
-import com.reftick.models.*
-import com.reftick.models.ImageDatabaseSingleton.dbQuery
+import com.reftick.dao.DatabaseSingleton.dbQuery
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -53,8 +52,12 @@ class ImageDatabaseImpl : ImageDatabase{
     }
 }
 
-val img = ImageDatabaseImpl().apply {
+val img: ImageDatabase = ImageDatabaseImpl().apply {
     runBlocking {
-
+        addImage(Image(0, "https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?cs=srgb&dl=pexels-mikebirdy-170811.jpg&fm=jpg", "cars", "example", "example"))
+        addImage(Image(0, "https://img.freepik.com/free-photo/modern-sports-car-speeds-through-dark-curve-generative-ai_188544-9136.jpg?size=626&ext=jpg&ga=GA1.1.1141335507.1719360000&semt=sph", "cars", "example", "example"))
+        addImage(Image(0, "https://imgd.aeplcdn.com/370x208/n/cw/ec/130591/fronx-exterior-right-front-three-quarter-109.jpeg?isig=0&q=80", "cars", "example", "example"))
+        addImage(Image(0, "https://imageio.forbes.com/specials-images/imageserve/5d35eacaf1176b0008974b54/0x0.jpg?format=jpg&crop=4560,2565,x790,y784,safe&height=900&width=1600&fit=bounds", "cars", "example", "example"))
+        addImage(Image(0, "https://upload.wikimedia.org/wikipedia/commons/a/a4/2019_Toyota_Corolla_Icon_Tech_VVT-i_Hybrid_1.8.jpg", "cars", "example", "example"))
     }
 }

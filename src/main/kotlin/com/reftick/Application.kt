@@ -1,7 +1,6 @@
 package com.reftick
 
 import com.reftick.dao.DatabaseSingleton
-import com.reftick.models.ImageDatabaseSingleton
 import com.reftick.models.UserSession
 import com.reftick.plugins.*
 import io.ktor.server.application.*
