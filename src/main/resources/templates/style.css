@@ -1,0 +1,72 @@
+body{
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    color: rgba(37, 57, 75, 0.72) !important;
+}
+
+button {
+    display: inline-block;
+    font-size: 20px;
+    padding: 5px 10px;
+    margin: 10px 2px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: rgba(3, 23, 42, 0.72) !important;
+    border: none;
+}
+button:hover {
+    color: #ffffff;
+    background-color: #336d99
+}
+button:active {
+    color: #ffffff;
+    background-color: #0d2e44;
+}
+
+.bigButton {
+    font-size: 23px;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 15px;
+}
+
+.smallButton {
+    font-size: 13px;
+    padding: 3px 8px;
+    text-decoration: none;
+    border-radius: 30px;
+}
+
+strong, b, .bold, h1, h2, h3, h4, h5, h6 {
+    color: rgba(3, 23, 42, 0.72) !important;
+}
+
+hr {
+    border-color: rgba(180, 189, 196, 0.72) !important;
+}
+
+select {
+    font-size: 16px;
+    padding: 2px 5px;
+    margin: 10px 2px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: rgba(3, 23, 42, 0.72) !important;
+    border: none;
+    border-radius: 5px;
+}
+
+input {
+    font-size: 16px;
+    padding: 1px 3px;
+    margin: 10px 2px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    color: rgba(3, 23, 42, 0.72) !important;
+}

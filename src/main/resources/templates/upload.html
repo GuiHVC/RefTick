@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Reftick</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
@@ -38,10 +39,10 @@
     <div class="col-sm-4">
         <form action="/upload" method="post" enctype="multipart/form-data">
             <h1>Upload an image</h1>
-            </br>
+            </br></br></br>
             <label for="imageLink"><b>Image link:</b></label>
             <input type="text" name="name" required>
-            </br>
+            </br></br>
             <label for="class"><b>Class:</b></label>
             <select id="class" name="class">
                 <!-- Options will be added here by the script -->
@@ -51,12 +52,12 @@
             <select id="tag" name="Tag">
                 <!-- Options will be added here by the script -->
             </select>
-            </br>
-            <button type="submit" class="btn btn-primary" onclick="uploadImage()">Upload</button>
+            </br></br></br>
+            <button type="submit" class="bigButton" onclick="uploadImage()">Upload</button>
         </form>
     </div>
     <div class="col-sm-8 text-center">
-        <img id="preview" src="" style="width: 500px; height: 500px; border: 2px solid black; object-fit: contain">
+        <img id="preview" src="" style="width: 800px; height: 500px; object-fit: contain">
     </div>
 </div>
 </br>
