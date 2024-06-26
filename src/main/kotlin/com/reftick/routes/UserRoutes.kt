@@ -164,24 +164,43 @@ fun Route.userRouting() {
                 call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
                 return@post
             }
-            val image = call.receive<Image>()
+            val url = URLDecoder.decode(call.request.queryParameters["imageLink"], "UTF-8") ?: return@post call.respond(
+                HttpStatusCode.BadRequest
+            )
+            if(url.length > 1000){
+                call.respondText("Url too big", status = HttpStatusCode.BadRequest)
+                return@post
+            }
+            if(!url.contains(".jpg") && !url.contains(".jpeg") && !url.contains(".png")){
+                call.respondText("Cannot recognize (please try [.jpg], [.jpeg] and [.png] urls", status = HttpStatusCode.BadRequest)
+                return@post
+            }
+            val tag = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@post call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val author = URLDecoder.decode(call.request.queryParameters["imageAuthor"], "UTF-8") ?: return@post call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val image = Image(id = 0, url = url, tag = tag, uploader = session.id, author = author)
             img.addImage(image)
             call.respondText("Image uploaded", status = HttpStatusCode.Created)
         }
     }
     route("/challenge"){
         get {
-            val tag = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@get call.respond(
+            val tagList = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@get call.respond(
                 HttpStatusCode.BadRequest
             )
             val quantity = URLDecoder.decode(call.request.queryParameters["quantity"], "UTF-8") ?: return@get call.respond(
                 HttpStatusCode.BadRequest
             )
-
-            val images = img.imagesByTag(tag)
+            val images = mutableListOf<Image>()
+            for(tag in tagList){
+                images.addAll(img.imagesByTag(tag.toString()))
+            }
             if(images.size >= quantity.toInt()){
                 val chosenImages = images.shuffled().take(quantity.toInt())
-                call.respond(chosenImages)
+                call.respond(mapOf("image" to chosenImages))
             }
             else{
                 call.respondText("Not enough images", status = HttpStatusCode.NotFound)
@@ -196,7 +215,7 @@ fun Route.userRouting() {
                 return@get
             }
             val images = img.imageByUploader(session.id)
-            call.respond(images)
+            call.respond(mapOf("image" to images))
         }
     }
     route("/deleteimage"){
