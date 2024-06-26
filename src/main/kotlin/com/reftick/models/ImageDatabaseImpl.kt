@@ -45,6 +45,12 @@ class ImageDatabaseImpl : ImageDatabase{
     override suspend fun removeImage(id: Int): Boolean = dbQuery {
         Images.deleteWhere { Images.id eq id } > 0
     }
+
+    override suspend fun imageByUploader(uploader: String): List<Image> = dbQuery {
+        Images
+            .select { Images.uploader eq uploader }
+            .map(::resultRowToImage)
+    }
 }
 
 val img = ImageDatabaseImpl().apply {

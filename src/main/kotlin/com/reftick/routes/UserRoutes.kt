@@ -184,4 +184,33 @@ fun Route.userRouting() {
             }
         }
     }
+    route("/myimages"){
+        get {
+            val session = call.sessions.get<UserSession>()
+            if (session == null) {
+                call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
+                return@get
+            }
+            val images = img.imageByUploader(session.id)
+            call.respond(images)
+        }
+    }
+    route("/deleteimage"){
+        get {
+            val session = call.sessions.get<UserSession>()
+            if (session == null) {
+                call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
+                return@get
+            }
+            val id = URLDecoder.decode(call.request.queryParameters["id"], "UTF-8") ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            if(img.removeImage(id.toInt())){
+                call.respondText("Image deleted", status = HttpStatusCode.OK)
+            }
+            else{
+                call.respondText("Image not found", status = HttpStatusCode.NotFound)
+            }
+        }
+    }
 }
