@@ -153,4 +153,35 @@ fun Route.userRouting() {
             call.respondText("User deleted", status = HttpStatusCode.OK)
         }
     }
+    route("/upload"){
+        post {
+            val session = call.sessions.get<UserSession>()
+            if (session == null) {
+                call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
+                return@post
+            }
+            val image = call.receive<Image>()
+            img.addImage(image)
+            call.respondText("Image uploaded", status = HttpStatusCode.Created)
+        }
+    }
+    route("/challenge"){
+        get {
+            val tag = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val quantity = URLDecoder.decode(call.request.queryParameters["quantity"], "UTF-8") ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+
+            val images = img.imagesByTag(tag)
+            if(images.size >= quantity.toInt()){
+                val chosenImages = images.shuffled().take(quantity.toInt())
+                call.respond(chosenImages)
+            }
+            else{
+                call.respondText("Not enough images", status = HttpStatusCode.NotFound)
+            }
+        }
+    }
 }
