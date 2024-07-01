@@ -43,9 +43,9 @@
         <form action="/upload" method="post" enctype="multipart/form-data">
             <h1>Upload an image</h1>
             </br></br></br>
-            <label for="imageLink"><b>Image link:</b></label>
+            <label for="link"><b>Image link:</b></label>
             <input type="text" name="link" required>
-            <label for="imageAuthor"><b>Image author:</b></label>
+            <label for="author"><b>Image author:</b></label>
             <input type="text" name="author" required>
             </br></br>
             <label for="class"><b>Class:</b></label>
@@ -77,6 +77,7 @@
         } else {
             options.body = JSON.stringify(params);
         }
+        console.log(url, options)
         return fetch(url, options);
     };
     const get = ( url, params, headers ) => request( url, params, 'GET', headers );
@@ -181,11 +182,11 @@
             return;
         }
         post('http://localhost:8080/upload', {
-            "id": "0", // This is a placeholder, the server will assign a new id
-            "url": imageLinkToSend,
+            "id": "0",
+            "url": encodeURIComponent(imageLinkToSend),
             "tag": tagToSend,
-            "uploader": "0", // This is a placeholder, the server will assign the correct username
-            "author": imageAuthorToSend,
+            "uploader": "0",
+            "author": imageAuthorToSend
         }, {
             'Content-Type': 'application/json'
         }).then(response => {
@@ -197,6 +198,7 @@
                 }
             })
         }).catch(error => {
+            console.error(error.message)
             addAlert('Failed to upload image', 'danger');
         })
     }

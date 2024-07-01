@@ -11,6 +11,8 @@ import io.ktor.server.freemarker.*
 import io.ktor.server.sessions.*
 import io.ktor.server.util.*
 import java.net.URLDecoder
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 
 fun Route.userRouting() {
     // Corrigir tudo depois, a lista será um arquivo, não uma lista (frase estranha btw)
@@ -83,30 +85,35 @@ fun Route.userRouting() {
     }
     route("/upload"){
         post {
+            println("oi")
             val session = call.sessions.get<UserSession>()
             if (session == null) {
                 call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
                 return@post
             }
-            val receivedImage = call.receive<Image>()
-            if (receivedImage.url.length > 1000) {
+            val receivedImageEncoded = call.receive<Image>()
+            val receivedImage =  URLDecoder.decode(receivedImageEncoded.url, "UTF-8")
+            if (receivedImage.length > 1000) {
                 call.respondText("Url too big", status = HttpStatusCode.BadRequest)
                 return@post
             }
-            if (!receivedImage.url.contains(".jpg") && !receivedImage.url.contains(".jpeg") && !receivedImage.url.contains(".png")) {
+            if (!receivedImage.contains(".jpg") && !receivedImage.contains(".jpeg") && !receivedImage.contains(".png")) {
                 call.respondText("Cannot recognize (please try [.jpg], [.jpeg] and [.png] urls", status = HttpStatusCode.BadRequest)
                 return@post
             }
-            val image = Image(id = 0, url = receivedImage.url, tag = receivedImage.tag, uploader = session.id, author = receivedImage.author)
+            val image = Image(id = 0, url = receivedImage, tag = receivedImageEncoded.tag, uploader = session.id, author = receivedImageEncoded.author)
             img.addImage(image)
             call.respondText("Image uploaded", status = HttpStatusCode.Created)
         }
     }
     route("/challenge"){
         get {
-            val tagList = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@get call.respond(
+            val tagParam = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@get call.respond(
                 HttpStatusCode.BadRequest
             )
+            val mapper = jacksonObjectMapper()
+            val tagList: List<String> = mapper.readValue(tagParam)
+            println(tagList)
             val quantity = URLDecoder.decode(call.request.queryParameters["quantity"], "UTF-8") ?: return@get call.respond(
                 HttpStatusCode.BadRequest
             )
@@ -119,7 +126,7 @@ fun Route.userRouting() {
                 call.respond(mapOf("image" to chosenImages))
             }
             else{
-                call.respondText("Not enough images", status = HttpStatusCode.NotFound)
+                call.respondText("Not enough images for these tags", status = HttpStatusCode.BadRequest)
             }
         }
     }

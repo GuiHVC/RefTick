@@ -83,8 +83,12 @@
         <img id="image" class="img" style="width: 800px; height: 500px; object-fit: contain">
     </div>
     </br>
+    <div>
+        <p id="authorName" style="margin-left: 1200px; display: none"></p>
+        <p id="userName" style="margin-left: 1200px; display: none"></p>
+    </div>
     <div class="container text-center">
-        <button id="quit_button" onclick="quitExercise()" style="display: none; margin-top: 390px">Quit exercise</button>
+        <button id="quit_button" onclick="quitExercise()" style="display: none; margin-top: 330px">Quit exercise</button>
     </div>
 
 
@@ -115,10 +119,9 @@
 
 
         var tagsClasses = {
-            "Landscapes": ["mountains", "beach", "building", "fields"],
+            "Landscapes": ["mountains", "beach", "city", "fields"],
             "Vehicles": ["cars", "motorcycles"],
-            "People": ["portraits", "poses", "clothing"],
-            "Class 3": ["tag1", "tag2", "tag3"]
+            "People": ["portraits", "poses", "clothing"]
         };
 
         var container = document.getElementById('settings');
@@ -220,31 +223,38 @@
                 document.getElementById('navbar').style.display="none"
                 document.getElementById('start_button').style.display="none"
 
-                var images = [];
-                images = getImages(tags, numImages);
-                runExercise(timeImageMin, timeImageSec, images);
+                getImagesAndRun(tags, numImage, timeImageMin, timeImageSec);
             }
         }
 
 
-        function getImages(tags, numImages){
+        function getImagesAndRun(tags, numImages, timeImageMin, timeImageSec){
             get('http://localhost:8080/challenge', {
-                "tag": tags,
+                "tag": JSON.stringify(tags),
                 "quantity": numImages
             }).then(response => {
-                response.json().then(data => {
+                console.log(response)
+                response.text().then(data => {
                     if (response.status === 200) {
-                        return data;
+                        let dataDict = JSON.parse(data);
+                        var images = dataDict.image;
+                        runExercise(timeImageMin, timeImageSec, images)
                     } else {
+                        document.getElementById('settings').style.display="block";
+                        document.getElementById('navbar').style.display="flex";
+                        document.getElementById('start_button').style.display="inline-block";
+                        document.getElementById('quit_button').style.display = 'none';
                         addAlert(data, 'danger');
                     }
                 })
             }).catch(error => {
+                console.error(error.message)
+                document.getElementById('settings').style.display="block";
+                document.getElementById('navbar').style.display="flex";
+                document.getElementById('start_button').style.display="inline-block";
+                document.getElementById('quit_button').style.display = 'none';
                 addAlert('Failed to get images', 'danger');
-            })
-            return
-            images.push('https://static.wikia.nocookie.net/unanything/images/a/a9/Ulqzhfv6j6g21.png/revision/latest?cb=20210823162238')
-            images.push('https://www.w3schools.com/w3images/mountains.jpg')
+            });
         }
 
 
@@ -253,6 +263,10 @@
             var timerSec= timeImageSec;
             var timer = document.getElementById('timer');
             var timerWell = document.getElementById('timer_well');
+            var authorname = document.getElementById('authorName');
+            var username = document.getElementById('userName');
+            authorname.style.display = 'block';
+            username.style.display = 'block';
             timerWell.style.display = 'block';
             timer.style.display = 'block';
 
@@ -271,7 +285,9 @@
 
             var index = 0;
             var image = document.getElementById('image');
-            image.src = images[index];
+            image.src = images[index].url;
+            authorname.innerHTML = 'Author: ' + images[index].author;
+            username.innerHTML = 'Uploaded by: ' + images[index].uploader;
             var imageContainer = document.getElementById('image_container');
             imageContainer.style.display = 'block';
             document.getElementById('quit_button').style.display = 'inline-block';
@@ -288,9 +304,13 @@
                     timer.style.display = 'none';
                     timerWell.style.display = 'none';
                     imageContainer.style.display = 'none';
+                    authorname.style.display = 'none';
+                    username.style.display = 'none';
                 }
                 else {
-                    image.src = images[index];
+                    image.src = images[index].url;
+                    authorname.innerHTML = 'Author: ' + images[index].author;
+                    username.innerHTML = 'Uploaded by: ' + images[index].uploader;
                     timerMin = timeImageMin;
                     timerSec = timeImageSec;
                 }

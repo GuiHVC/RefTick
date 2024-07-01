@@ -38,6 +38,8 @@ dependencies {
     implementation("com.h2database:h2:$h2_version")
     implementation("io.ktor:ktor-server-freemarker:$ktor_version")
     implementation("io.ktor:ktor-server-sessions:$ktor_version")
+    implementation ("com.fasterxml.jackson.core:jackson-databind:2.17.1")
+    implementation ("com.fasterxml.jackson.module:jackson-module-kotlin:2.17.1")
     testImplementation("io.ktor:ktor-server-tests-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
     testImplementation("io.ktor:ktor-client-content-negotiation-jvm:$ktor_version")
