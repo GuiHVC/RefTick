@@ -172,6 +172,7 @@
         imageLinkToSend = document.querySelector('input[name="link"]').value
         imageAuthorToSend = document.querySelector('input[name="author"]').value
         tagToSend = document.getElementById('tag').value
+        console.log(imageLinkToSend)
         if(imageLinkToSend === ""){
             addAlert("Please enter an image link", "danger");
             return;
