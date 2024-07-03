@@ -15,7 +15,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 
 fun Route.userRouting() {
-    // Corrigir tudo depois, a lista será um arquivo, não uma lista (frase estranha btw)
     route("/") {
         get {
             call.respond(mapOf("user" to dao.allUsers()))
