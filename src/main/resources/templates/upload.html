@@ -40,7 +40,7 @@
 
 <div id="upload" class="container">
     <div class="col-sm-4">
-        <form action="/upload" method="post" enctype="multipart/form-data">
+        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data">
             <h1>Upload an image</h1>
             </br></br></br>
             <label for="link"><b>Image link:</b></label>
@@ -58,7 +58,7 @@
                 <!-- Options will be added here by the script -->
             </select>
             </br></br></br>
-            <button type="submit" class="bigButton" onclick="uploadImage()">Upload</button>
+            <button type="submit" class="bigButton">Upload</button>
         </form>
     </div>
     <div class="col-sm-8 text-center">
@@ -167,12 +167,18 @@
         }, 10);
     }
 
+    document.addEventListener('DOMContentLoaded', function() {
+        var uploadForm = document.getElementById('uploadForm');
+        uploadForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o comportamento padrão de submissão do formulário
+            uploadImage(); // Chama a função para processar o upload da imagem
+        });
+    });
 
     function uploadImage() {
-        imageLinkToSend = document.querySelector('input[name="link"]').value
-        imageAuthorToSend = document.querySelector('input[name="author"]').value
-        tagToSend = document.getElementById('tag').value
-        console.log(imageLinkToSend)
+        var imageLinkToSend = document.querySelector('input[name="link"]').value
+        var imageAuthorToSend = document.querySelector('input[name="author"]').value
+        var tagToSend = document.getElementById('tag').value
         if(imageLinkToSend === ""){
             addAlert("Please enter an image link", "danger");
             return;

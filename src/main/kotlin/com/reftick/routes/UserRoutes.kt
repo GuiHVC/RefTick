@@ -85,7 +85,6 @@ fun Route.userRouting() {
     }
     route("/upload"){
         post {
-            println("oi")
             val session = call.sessions.get<UserSession>()
             if (session == null) {
                 call.respondText("Not logged in", status = HttpStatusCode.BadRequest)
