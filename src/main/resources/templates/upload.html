@@ -139,6 +139,11 @@
     var imagePreview = document.getElementById('preview');
     imageLinkInput.addEventListener('input', function() {
         imagePreview.src = imageLinkInput.value;
+        var currentAlert = document.getElementById('alert');
+        if (currentAlert) {
+            console.log('removing alert');
+            currentAlert.remove();
+        }
     });
 
 
@@ -152,6 +157,7 @@
 
         var alert = document.createElement('div');
         alert.className = 'alert alert-' + type;
+        alert.id = 'alert';
         alert.innerHTML = message;
         document.body.appendChild(alert);
 
@@ -189,7 +195,7 @@
         }
         post('http://localhost:8080/upload', {
             "id": "0",
-            "url": encodeURIComponent(imageLinkToSend),
+            "url": imageLinkToSend,
             "tag": tagToSend,
             "uploader": "0",
             "author": imageAuthorToSend
