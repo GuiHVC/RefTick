@@ -54,7 +54,7 @@ fun Route.userRouting() {
             if (user != null) {
                 if(user.password == password){
                     call.sessions.set(UserSession(id = user.username))
-                    call.respondText("User logged in", status = HttpStatusCode.OK)
+                    call.respondText(user.username, status = HttpStatusCode.OK)
                 }
                 else{
                     call.respondText("Incorrect password", status = HttpStatusCode.Unauthorized)

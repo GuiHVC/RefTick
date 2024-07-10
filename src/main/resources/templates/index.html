@@ -188,9 +188,16 @@
                             oldAlert.remove();
                             oldAlert = document.getElementById("alert");
                         }
-                        clearFields();
-                        addAlert(data, 'success', false);
-                        location.reload();
+                        addAlert("Logged successfully", 'success', false)
+                        clearFields()
+                        document.getElementById("login_button").style.display="none"
+                        document.getElementById("signup_button").style.display="none"
+                        document.getElementById("logout_button").style.display="inline-block"
+                        document.getElementById("delete_user_button").style.display="inline-block"
+                        document.getElementById("navbar_upload").style.display="inline-block"
+                        document.getElementById("navbar_myimages").style.display="inline-block"
+                        document.getElementById("login_text").innerHTML = "- logged in as " + username;
+                        logged = true;
                     } else {
                         addAlert(data, 'danger')
                     }
@@ -220,7 +227,7 @@
             }).then(response => {
                 response.text().then(data => {
                     if(response.status == 200) {
-                        addAlert(data, 'success', !firstLogin)
+                        addAlert("Logged successfully", 'success', !firstLogin)
                         clearFields()
                         document.getElementById("login_button").style.display="none"
                         document.getElementById("signup_button").style.display="none"
@@ -228,7 +235,7 @@
                         document.getElementById("delete_user_button").style.display="inline-block"
                         document.getElementById("navbar_upload").style.display="inline-block"
                         document.getElementById("navbar_myimages").style.display="inline-block"
-                        document.getElementById("login_text").innerHTML = "- logged in as " + email;
+                        document.getElementById("login_text").innerHTML = "- logged in as " + data;
                         logged = true;
                     } else {
                         addAlert(data, 'danger')
