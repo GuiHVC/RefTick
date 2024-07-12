@@ -168,4 +168,22 @@ fun Route.userRouting() {
             }
         }
     }
+    route("/searchImage"){
+        get {
+            val tag = URLDecoder.decode(call.request.queryParameters["tag"], "UTF-8") ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val images = img.imagesByTag(tag)
+            call.respond(mapOf("image" to images))
+        }
+    }
+    route("/searchUser"){
+        get {
+            val username = URLDecoder.decode(call.request.queryParameters["username"], "UTF-8") ?: return@get call.respond(
+                HttpStatusCode.BadRequest
+            )
+            val images = img.imageByUploader(username)
+            call.respond(mapOf("image" to images))
+        }
+    }
 }

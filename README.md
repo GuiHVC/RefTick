@@ -30,15 +30,19 @@ Web tool to provide reference images for drawing, as well as a timer for practic
 #
 
 ## Installation
-Not available for public use yet. Once it's public, it will be available online hosted by a server.
+Not available for public use yet. Once it's public, it will be available online hosted by a public server.
 
 In order to test, download the repository and run it with your preferred IDE.
 (Built on IntelliJ, therefore, IntelliJ recommended.)
+
+IMPORTANT: Enable third party cookies in your browser, or else you won't be able to use the website properly (functionalities that require login will be compromised).
 
 ## Usage
 The user will enter the website and provide the wanted tags and challenge size. Then, the tool will choose random reference images for that tag and a timer for each image for the artist to study.
 
 The reference images are both images uploaded by other users and images uploaded by us (the devs).
+
+IMPORTANT: Enable third party cookies in your browser, or else you won't be able to use the website properly (functionalities that require login will be compromised).
 
 ## Contributing
 Providing images for RefTick once it's possible is a nice way to contribute.
@@ -59,6 +63,3 @@ Copyright (c) 2024 Adriano Elias Andrade, Guilherme Henrique Vasconcelos da Cunh
 
 ## Project status
 In development.
-
-## Upcoming
-Being able to access other users' profile.

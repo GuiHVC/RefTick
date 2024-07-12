@@ -47,7 +47,7 @@
 </nav>
 
 <div style="text-align: center">
-    <h1>My images</h1>
+    <h1 id="titleText"></h1>
     </br>
 </div>
 <hr></br></br>
@@ -59,8 +59,6 @@
 
 
 <script>
-    //const link = "https://upload.wikimedia.org/wikipedia/commons/e/e7/Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg";
-    //var images = [link, link, link, link, link];
     const request = (url, params = {}, method = 'GET', headers = {}) => {
         let options = { "method": method , "headers" : headers , credentials: 'include'};
         if ('GET' === method) {
@@ -74,92 +72,92 @@
     const post = ( url, params, headers ) => request( url, params, 'POST', headers );
 
 
-    get('http://localhost:8080/checkLogin', {}).then(response => {
-        if (response.status === 200) {
-            response.text().then(data => {
-                if (data === 'false') {
-                    window.location.href = 'index.html';
-                }
-            })
-        } else {
-            window.location.href = 'index.html';
-        }
-    }).catch(error => {
-        window.location.href = 'index.html';
-    });
+    var param = new URLSearchParams(window.location.search);
+    var username = param.get('user');
+    var tag = param.get('tag');
 
-    get('http://localhost:8080/myimages', {}).then(response => {
-        if (response.status === 200) {
-            response.json().then(data => {
-                let images = JSON.parse(JSON.stringify(data));
-                if(images.image.length === 0) {
-                    var small = document.createElement('small')
-                    small.className = 'small';
-                    small .innerHTML = 'You have no images yet. Upload some!';
-                    var hText = document.createElement('h2')
-                    hText.className = 'h2';
-                    hText.appendChild(small);
-                    document.querySelector('.container').appendChild(hText);
-                }
-                else {
-                    var container = document.querySelector('.container');
-                    for (var i = 0; i < images.image.length; i += 1) {
-                        var thumbnail = document.createElement('div');
-                        thumbnail.className = 'thumbnail';
-                        thumbnail.style.margin = '10px 10px';
-                        thumbnail.style.width = '30%';
-                        thumbnail.style.display = 'flex';
-                        thumbnail.style.flexDirection = 'column';
-                        thumbnail.style.alignItems = 'center';
-                        var image = document.createElement('img');
-                        image.src = images.image[i].url;
-                        thumbnail.appendChild(image);
-
-                        var deleteButton = document.createElement('button');
-                        deleteButton.innerHTML = 'Delete';
-                        deleteButton.style.marginTop = '10px';
-                        var id = images.image[i].id;
-                        (function(id) {
-                            deleteButton.addEventListener('click', function () {
-                                deleteImage(thumbnail, deleteButton, id);
-                            });
-                        })(id);
-
-                        container.appendChild(thumbnail);
-                        thumbnail.appendChild(deleteButton);
+    if(username !== null){
+        get('http://localhost:8080/searchUser', {username: username}).then(response => {
+            if (response.status === 200) {
+                response.json().then(data => {
+                    var title = document.getElementById('titleText');
+                    title.innerHTML = username + "'s images";
+                    let images = JSON.parse(JSON.stringify(data));
+                    if(images.image.length === 0) {
+                        var small = document.createElement('small')
+                        small.className = 'small';
+                        small .innerHTML = 'User ' + username + ' has no uploaded images.';
+                        var hText = document.createElement('h2')
+                        hText.className = 'h2';
+                        hText.appendChild(small);
+                        document.querySelector('.container').appendChild(hText);
                     }
-                }
-            });
-        } else {
-            addAlert('Failed to get images', 'danger');
-        }
-    }).catch(error => {
-        addAlert('Failed to get images', 'danger');
-    });
+                    else {
+                        var container = document.querySelector('.container');
+                        for (var i = 0; i < images.image.length; i += 1) {
+                            var thumbnail = document.createElement('div');
+                            thumbnail.className = 'thumbnail';
+                            thumbnail.style.margin = '10px 10px';
+                            thumbnail.style.width = '30%';
+                            thumbnail.style.display = 'flex';
+                            thumbnail.style.flexDirection = 'column';
+                            thumbnail.style.alignItems = 'center';
+                            var image = document.createElement('img');
+                            image.src = images.image[i].url;
+                            thumbnail.appendChild(image);
 
-    function searchChange() {
-        var type = document.getElementById("searchType").value;
-        if(type == "user") {
-            document.getElementById("user-search").placeholder = "Search for username";
-        } else if(type == "tag") {
-            document.getElementById("user-search").placeholder = "Search for tag";
-        }
-    }
-
-    function deleteImage(thumbnail, deleteButton, id) {
-        get('http://localhost:8080/deleteimage', {"id": id}).then(response => {
-            response.text().then(data => {
-                if (response.status === 200) {
-                    location.reload();
-                } else {
-                    addAlert('Failed to delete image', 'danger');
-                }
-            });
+                            container.appendChild(thumbnail);
+                        }
+                    }
+                });
+            } else {
+                addAlert('Failed to get images', 'danger');
+            }
         }).catch(error => {
-            addAlert('Failed to delete image', 'danger');
+            addAlert('Failed to get images', 'danger');
         });
     }
+    else if(tag !== null) {
+        get('http://localhost:8080/searchImage', {tag: tag}).then(response => {
+            if (response.status === 200) {
+                response.json().then(data => {
+                    var title = document.getElementById('titleText');
+                    title.innerHTML = 'Images with tag ' + tag;
+                    let images = JSON.parse(JSON.stringify(data));
+                    if(images.image.length === 0) {
+                        var small = document.createElement('small')
+                        small.className = 'small';
+                        small .innerHTML = 'No images found for tag ' + tag + '. Upload an image <a href="upload.html">here</a>.';
+                        var hText = document.createElement('h2')
+                        hText.className = 'h2';
+                        hText.appendChild(small);
+                        document.querySelector('.container').appendChild(hText);
+                    }
+                    else {
+                        var container = document.querySelector('.container');
+                        for (var i = 0; i < images.image.length; i += 1) {
+                            var thumbnail = document.createElement('div');
+                            thumbnail.className = 'thumbnail';
+                            thumbnail.style.margin = '10px 10px';
+                            thumbnail.style.width = '30%';
+                            thumbnail.style.display = 'flex';
+                            thumbnail.style.flexDirection = 'column';
+                            thumbnail.style.alignItems = 'center';
+                            var image = document.createElement('img');
+                            image.src = images.image[i].url;
+                            thumbnail.appendChild(image);
 
+                            container.appendChild(thumbnail);
+                        }
+                    }
+                });
+            } else {
+                addAlert('Failed to get images', 'danger');
+            }
+        }).catch(error => {
+            addAlert('Failed to get images', 'danger');
+        });
+    }
 
     function addAlert(message, type, deleteOld = true) {
         if (deleteOld) {
@@ -184,6 +182,15 @@
             newDiv.innerHTML = message;
             containerDiv.appendChild(newDiv);
         }, 10);
+    }
+
+    function searchChange() {
+        var type = document.getElementById("searchType").value;
+        if(type == "user") {
+            document.getElementById("user-search").placeholder = "Search for username";
+        } else if(type == "tag") {
+            document.getElementById("user-search").placeholder = "Search for tag";
+        }
     }
 
     function searchFunction() {
