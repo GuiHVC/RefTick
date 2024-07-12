@@ -28,6 +28,14 @@ Web tool to provide reference images for drawing, as well as a timer for practic
 
 ![](visuals/Challenge.png)
 #
+- Search User
+
+![](visuals/SearchUser.png)
+#
+- Search Tag
+
+![](visuals/SearchTag.png)
+#
 
 ## Installation
 Not available for public use yet. Once it's public, it will be available online hosted by a public server.
